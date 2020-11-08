@@ -36,17 +36,14 @@ public class MainActivity extends AppCompatActivity {
 
         GoogleSignInOptions googleSignInOptions = new GoogleSignInOptions.Builder(
                 GoogleSignInOptions.DEFAULT_SIGN_IN
-        ).requestIdToken("177859404389-fhlppd8og3t2jsc2p9t9ipuvmu1d4cvj.apps.googleusercontent.com")
+        ).requestIdToken(getString(R.string.default_web_client_id))
                 .requestEmail()
                 .build();
         googleSignInClient = GoogleSignIn.getClient(MainActivity.this,
                 googleSignInOptions);
-        btSignIn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = googleSignInClient.getSignInIntent();
-                startActivityForResult(intent,100);
-            }
+        btSignIn.setOnClickListener(v -> {
+            Intent intent = googleSignInClient.getSignInIntent();
+            startActivityForResult(intent,100);
         });
         firebaseAuth = FirebaseAuth.getInstance();
         FirebaseUser firebaseUser = firebaseAuth.getCurrentUser();
@@ -70,19 +67,15 @@ public class MainActivity extends AppCompatActivity {
                             .getResult(ApiException.class);
                     if (googleSignInAccount != null){
                         AuthCredential authCredential = GoogleAuthProvider
-                                .getCredential(googleSignInAccount.getIdToken(),
-                                        null);
+                                .getCredential(googleSignInAccount.getIdToken(),null);
                         firebaseAuth.signInWithCredential(authCredential)
-                                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-                                    @Override
-                                    public void onComplete(@NonNull Task<AuthResult> task) {
-                                        if (task.isSuccessful()){
-                                            startActivity(new Intent(MainActivity.this,ProfileActivity.class)
-                                            .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
-                                            displayToast("Firebase authentication successfull");
-                                        }else {
-                                            displayToast("Authentication Failed :" + task.getException().getMessage());
-                                        }
+                                .addOnCompleteListener(this, task -> {
+                                    if (task.isSuccessful()){
+                                        startActivity(new Intent(MainActivity.this,ProfileActivity.class)
+                                        .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
+                                        displayToast("Firebase authentication successfull");
+                                    }else {
+                                        displayToast("Authentication Failed :" + task.getException().getMessage());
                                     }
                                 });
 
