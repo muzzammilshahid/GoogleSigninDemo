@@ -28,6 +28,7 @@ public class MainActivity extends AppCompatActivity {
     GoogleSignInClient googleSignInClient;
     FirebaseAuth firebaseAuth;
     ProgressDialog pd;
+    RoomDB database;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -35,6 +36,7 @@ public class MainActivity extends AppCompatActivity {
         btSignIn =findViewById(R.id.bt_sign_in);
         pd = new ProgressDialog(this);
         pd.setMessage("loading...");
+        database= RoomDB.getInstance(this);
 
         GoogleSignInOptions googleSignInOptions = new GoogleSignInOptions.Builder(
                 GoogleSignInOptions.DEFAULT_SIGN_IN
@@ -78,6 +80,11 @@ public class MainActivity extends AppCompatActivity {
                                         startActivity(new Intent(MainActivity.this,ProfileActivity.class)
                                         .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
                                         displayToast("Firebase authentication successful");
+                                        System.out.println(googleSignInAccount.getIdToken()+"hyy");
+                                        MainData mainData = new MainData();
+                                        mainData.setToken_id(googleSignInAccount.getIdToken());
+                                        database.mainDao().insert(mainData);
+
                                     }else {
                                         displayToast("Authentication Failed :" + Objects.requireNonNull(task.getException()).getMessage());
                                     }

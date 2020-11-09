@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">GoogleSigninDemo</string>
+    <string name="profile_pic_of_google">Profile Pic of Google</string>
+    <string name="logout">Logout</string>
 </resources>
